@@ -82,7 +82,7 @@ To verify the installation was successful:
       "loaded_projects": ["openstack", "android", "qt"]
     }
     ```
-4.  **Go to a supported Gerrit page** (e.g., [review.opendev.org](https://review.opendev.org/)) and click the extension icon to start predicting.
+<!-- 4.  **Go to a supported Gerrit page** (e.g., [review.opendev.org](https://review.opendev.org/)) and click the extension icon to start predicting. -->
 
 ---
 
