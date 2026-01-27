@@ -107,3 +107,17 @@ To verify the installation was successful:
 5.  **Predict:** Click **"Run Prediction"**.
     * The tool will display a list of semantically related patches with a confidence score (e.g., "Match: 92%").
     <!-- * Clicking a result will take you to that patch. -->
+
+---
+## 📄 Citation
+If you use this tool in your research, please cite our paper:
+```
+@inproceedings{smartpatch2026,
+  title={SmartPatch Linker: A Browser-Based Assistant for Recovering Semantic Patch Linkages},
+  author={Khemissi, Islem and Chouchen, Moataz},
+  booktitle={Proceedings of the ACM International Conference on the Foundations of Software Engineering (FSE '26)},
+  year={2026},
+  address={Montréal, Canada},
+  note={To appear}
+}
+```
