@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "SmartPatch ML Linker",
+  "version": "3.0",
+  "description": "Predicts related Gerrit changes using a local ML backend.",
+  "permissions": ["activeTab", "scripting"],
+  "host_permissions": [
+    "http://127.0.0.1:5000/*", 
+    "*://review.opendev.org/*",
+    "*://android-review.googlesource.com/*",
+    "*://codereview.qt-project.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

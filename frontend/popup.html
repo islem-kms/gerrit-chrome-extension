@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SmartPatchLinker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>SmartPatchLinker</h1>
+
+  <div class="input-group">
+    <label for="daysInput">Lookback Window (Days)</label>
+    <div class="input-wrapper">
+      <input type="number" id="daysInput" value="14" min="1" max="365">
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="limitInput">Max Results (Top-K)</label>
+    <div class="input-wrapper">
+      <input type="number" id="limitInput" value="5" min="1" max="50">
+    </div>
+  </div>
+
+  <button id="predictBtn">Run Prediction</button>
+
+  <div id="statusMessage"></div>
+  <div id="resultsList" class="results-container"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
