@@ -1,8 +1,8 @@
 # SmartPatchLinker
 
-**SmartPatch Linker** is a browser-based research tool designed to accelerate Modern Code Review. It detects semantically related changes (e.g., "Alternative Solutions") in Gerrit by analyzing patch descriptions and file paths using a local **Sentence-BERT (SBERT)** model.
+**SmartPatchLinker** is a browser-based research tool designed to accelerate Modern Code Review. It detects semantically related changes (e.g., "Alternative Solutions") in Gerrit by analyzing patch descriptions and file paths using a local **Sentence-BERT (SBERT)** model.
 
-Unlike Gerrit's native "Related Changes" feature, which only tracks Git dependencies, SmartPatch Linker identifies "soft" semantic links, helping developers avoid redundant work and discover orphan changes in real-time.
+Unlike Gerrit's native "Related Changes" feature, which only tracks Git dependencies, SmartPatchLinker identifies "soft" semantic links, helping developers avoid redundant work and discover orphan changes in real-time.
 
 <!-- ![Extension Preview](https://via.placeholder.com/800x400?text=Insert+Screenshot+of+SmartPatch+Linker+Here) -->
 
@@ -17,7 +17,7 @@ Unlike Gerrit's native "Related Changes" feature, which only tracks Git dependen
 
 # 🛠️ Installation Guide
 
-This guide covers how to set up the **SmartPatch Linker** environment. The system consists of two parts:
+This guide covers how to set up the **SmartPatchLinker** environment. The system consists of two parts:
 1.  **Backend:** A local Python server (Flask/Docker) that handles the ML inference.
 2.  **Frontend:** A Chrome Extension that interacts with the Gerrit web interface.
 
@@ -54,7 +54,7 @@ If you prefer to run it natively on your machine:
 
 1.  **Navigate to the backend directory:**
     ```bash
-    cd smartpatch-backend
+    cd backend
     ```
 
 2.  **Install dependencies:**
@@ -92,8 +92,8 @@ To verify the installation was successful:
 2.  **Navigate to** `chrome://extensions`.
 3.  **Enable Developer mode** by toggling the switch in the top-right corner.
 4.  **Click the "Load unpacked" button** (top-left).
-5.  **Select the `smartpatch-extension` folder** from this repository.
-6.  **The SmartPatch Linker icon** should now appear in your browser toolbar.
+5.  **Select the `frontend` folder** from this repository.
+6.  **The SmartPatchLinker icon** should now appear in your browser toolbar.
 
 ---
 ## 📖 Usage
@@ -113,7 +113,7 @@ To verify the installation was successful:
 If you use this tool in your research, please cite our paper:
 ```
 @inproceedings{smartpatch2026,
-  title={SmartPatch Linker: A Browser-Based Assistant for Recovering Semantic Patch Linkages},
+  title={SmartPatchLinker: A Browser-Based Assistant for Retrieving Semantic Patch Linkages},
   author={Khemissi, Islem and Chouchen, Moataz},
   booktitle={Proceedings of the ACM International Conference on the Foundations of Software Engineering (FSE '26)},
   year={2026},
