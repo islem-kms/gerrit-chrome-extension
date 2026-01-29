@@ -1,20 +1,51 @@
-document.getElementById('predictBtn').addEventListener('click', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Get the current tab to generate a unique key (URL)
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    if (!tab) return;
+
+    const uniqueKey = tab.url;
+
+    // 2. CHECK STORAGE: Restore state if it exists
+    chrome.storage.local.get([uniqueKey], (result) => {
+        const cachedData = result[uniqueKey];
+        
+        if (cachedData) {
+            // Restore Inputs
+            document.getElementById('daysInput').value = cachedData.days || 14;
+            document.getElementById('limitInput').value = cachedData.limit || 5;
+            
+            // Restore Status Message (Now includes the old timer!)
+            const statusEl = document.getElementById('statusMessage');
+            statusEl.textContent = cachedData.statusText || "Restored from cache.";
+            statusEl.style.color = "#57606a";
+
+            // Restore Results
+            if (cachedData.results) {
+                renderResults(cachedData.results, tab.url);
+            }
+        }
+    });
+
+    // 3. ATTACH CLICK LISTENER
+    document.getElementById('predictBtn').addEventListener('click', () => {
+        runPrediction(tab);
+    });
+});
+
+async function runPrediction(tab) {
     const days = document.getElementById('daysInput').value;
     const limit = document.getElementById('limitInput').value;
     const statusEl = document.getElementById('statusMessage');
     const resultsEl = document.getElementById('resultsList');
 
     // UI Reset
-    statusEl.textContent = "Processing with ML Model...";
+    statusEl.textContent = "Processing...";
     statusEl.style.color = "#57606a";
     resultsEl.innerHTML = "";
 
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-    if (!tab) {
-        statusEl.textContent = "Error: No active tab.";
-        return;
-    }
+    // --- ⏱️ START TIMER ---
+    const startTime = performance.now(); 
 
     try {
         // Send inputs to Content Script
@@ -24,33 +55,63 @@ document.getElementById('predictBtn').addEventListener('click', async () => {
             limit: limit
         });
 
+        // --- ⏱️ END TIMER ---
+        const endTime = performance.now();
+        const duration = Math.round(endTime - startTime); // Calculate milliseconds
+
         if (response && response.success) {
-            statusEl.textContent = `Found ${response.data.length} related patches.`;
-            renderResults(response.data);
+            const resultCount = response.data.length;
+            
+            // Update status text with time
+            const successMsg = `Found ${resultCount} patches in ${duration}ms`;
+            
+            statusEl.textContent = successMsg;
+
+            // --- SAVE STATE TO STORAGE ---
+            const stateToSave = {
+                results: response.data,
+                days: days,
+                limit: limit,
+                statusText: successMsg, // Saves the time string too
+                timestamp: Date.now()
+            };
+            
+            let storageObj = {};
+            storageObj[tab.url] = stateToSave;
+            chrome.storage.local.set(storageObj);
+            // -----------------------------
+
+            renderResults(response.data, tab.url);
+
         } else {
             statusEl.textContent = response.error || "Analysis Failed.";
-            statusEl.style.color = "#cf222e"; // Red error color
+            statusEl.style.color = "#cf222e";
         }
     } catch (error) {
-        statusEl.textContent = "Connection Error. Refresh the page and try again.";
+        statusEl.textContent = "Connection Error or Refresh Required.";
         console.error(error);
     }
-});
+}
 
-function renderResults(predictions) {
+function renderResults(predictions, currentTabUrl) {
     const container = document.getElementById('resultsList');
-    
-    if (predictions.length === 0) {
+    container.innerHTML = ""; 
+
+    if (!predictions || predictions.length === 0) {
         container.innerHTML = "<div class='no-results'>No high-confidence matches found.</div>";
         return;
     }
 
+    const urlObj = new URL(currentTabUrl);
+    const origin = urlObj.origin;
+
     predictions.forEach(item => {
-        // Create a Score Badge (e.g., 95.2%)
         const percentage = (item.score * 100).toFixed(1) + "%";
         
         const div = document.createElement('div');
         div.className = 'result-item';
+        div.style.cursor = "pointer"; 
+        
         div.innerHTML = `
             <div class="result-header">
                 <span class="result-date">${item.created_time}</span>
@@ -60,14 +121,9 @@ function renderResults(predictions) {
             <div class="result-id">ID: ${item.patch_id}</div>
         `;
         
-        // Optional: Add click listener to open that patch
         div.addEventListener('click', () => {
-            // Construct URL based on project (simplified)
-            // Ideally, the backend would return the full URL, but we can guess:
-            const currentBase = window.location.origin; 
-            // This won't work perfectly if you cross-project link, 
-            // but for same-project links it's fine:
-            // chrome.tabs.create({ url: ... });
+            const targetUrl = `${origin}/q/${item.patch_id}`;
+            chrome.tabs.create({ url: targetUrl });
         });
 
         container.appendChild(div);
